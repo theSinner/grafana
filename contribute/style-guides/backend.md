@@ -98,3 +98,11 @@ drop-in alternative to the standard [encoding/json](https://golang.org/pkg/encod
 is a fine choice, profiling shows that json-iterator may be 3-4 times more efficient for encoding. We haven't profiled
 its parsing performance yet, but according to json-iterator's own benchmarks, it appears even more superior in this
 department.
+
+## Bus
+
+The Grafana message [bus](https://github.com/grafana/grafana/tree/master/pkg/bus) is used a lot throughout the
+code base, but avoid its usage in new code since it results in dynamic function calls instead of static ones,
+which can be verified by the compiler and are much easier to follow/verify for the human reader. I.e., code using the
+bus will have a higher risk of bugs than otherwise due to its dynamic nature. Additionally, it's difficult to use
+the bus without relying on global state, which (as described elsewhere in these guidelines) should generally be avoided.
